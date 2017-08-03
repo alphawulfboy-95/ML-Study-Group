@@ -2,12 +2,19 @@ import sys
 
 import numpy as np
 
-data_singlevar = sys.argv[1]
+try:
+    data_singlevar = sys.argv[1]
+except Exception:
+    data_singlevar = "data_singlevar.txt"
+
 X = []
 y = []
 with open(data_singlevar, 'r') as f:
     for line in f.readlines():
-        xt, yt = [float(i) for i in line.split(',')]
+        try:
+            xt, yt = [float(i) for i in line.split(',')]
+        except ValueError:
+            break
         X.append(xt)
         y.append(yt)
 
@@ -53,14 +60,14 @@ print ("Explain variance score =", round(sm.explained_variance_score(y_test, y_t
 print ("R2 score =", round(sm.r2_score(y_test, y_test_pred), 2))
 
 # Model persistence
-import cPickle as pickle
+import _pickle as pickle
 
 output_model_file = '3_model_linear_regr.pkl'
 
-with open(output_model_file, 'w') as f:
+with open(output_model_file, 'wb') as f:
     pickle.dump(linear_regressor, f)
 
-with open(output_model_file, 'r') as f:
+with open(output_model_file, 'rb') as f:
     model_linregr = pickle.load(f)
 
 y_test_pred_new = model_linregr.predict(X_test)
